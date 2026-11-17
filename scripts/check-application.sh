@@ -6,7 +6,7 @@ project="wedding-check-$(date +%s)-$$"
 export DJANGO_SECRET_KEY=fictional-check-key-not-for-deployment
 export POSTGRES_PASSWORD=fictional-check-password
 export POSTGRES_DB=wedding POSTGRES_USER=wedding
-export DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,app,testserver
+export DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,app,testserver,web
 export APP_BIND=127.0.0.1 APP_PORT=0 WEDDING_TIMEZONE=Australia/Sydney
 export DJANGO_SECURE_COOKIES=true DJANGO_TRUST_PROXY_HEADERS=false
 dc() { docker compose --env-file /dev/null -f compose.yml -p "$project" "$@"; }
@@ -46,3 +46,11 @@ dc up --detach --wait --wait-timeout 120
 dc exec -T app python -c 'from pathlib import Path; assert Path("/data/media/check.txt").read_text() == "fictional media"'
 dc exec -T app python manage.py shell -c 'from django.contrib.sessions.models import Session; assert Session.objects.filter(session_key="fictional-persistence-check").exists()'
 echo 'Application checks and container recreation passed.'
+# Exercise the browser against the isolated stack in explicit HTTP development mode.
+export DJANGO_SECURE_COOKIES=false
+dc down
+dc up --detach --wait --wait-timeout 120
+printf '%s\n' 'Fictional!Browser!Pass123' | dc exec -T app python manage.py editor_account bootstrap --password-stdin
+docker build --target browser-test -t "$project-browser-test" frontend
+docker run --rm --shm-size=256m --network "${project}_default" \
+  -e BASE_URL=http://web:8080 "$project-browser-test"

@@ -4,7 +4,7 @@ A self-hosted wedding website with a visual editor, interchangeable layouts and
 colour palettes, and private party-based RSVPs.
 
 **Status:** application scaffold. Compose serves an unconfigured placeholder page;
-the editor and RSVPs are not implemented yet. Delivery is tracked in the
+content editing and RSVPs are not implemented yet. Delivery is tracked in the
 [GitHub project](https://github.com/users/jordanstevens1002/projects/3)
 and the [ordered roadmap](docs/roadmap.md).
 
@@ -56,9 +56,10 @@ Open `http://127.0.0.1:8080`. Only the web gateway publishes a port, bound to lo
 by default. Add your public hostname to `DJANGO_ALLOWED_HOSTS` before using your
 existing HTTPS proxy. PostgreSQL and media live in named volumes; `down` retains
 them. `down --volumes` deletes them and must not be used on a real deployment.
-The editor authentication backend is available; the browser editor and login
-interface follow in later issues. See [editor access](docs/editor-access.md) for
-private account setup, recovery and HTTPS configuration.
+Open `/editor/` for login, account settings and the editor navigation shell. Website
+content and invitation controls follow in later issues. See
+[editor access](docs/editor-access.md) for private account setup, recovery and HTTPS
+configuration.
 
 For build/test commands and API generation, see [development](docs/development.md).
 

@@ -8,6 +8,14 @@ COPY src ./src
 FROM dependencies AS test
 CMD ["npm", "test"]
 
+FROM mcr.microsoft.com/playwright:v1.65.1-noble@sha256:1507cbfc550a63a6b7396791ca4f00df17beb56342d2447b3f106c306f525579 AS browser-test
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY playwright.config.ts ./
+COPY e2e ./e2e
+CMD ["npm", "run", "test:browser"]
+
 FROM dependencies AS build
 RUN npm run build
 
