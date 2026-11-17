@@ -30,10 +30,16 @@ ci, chore, perf, revert. Mark incompatible changes with `!` and describe the imp
 Feature PRs are squash-merged into `develop`; never rewrite long-lived branch history.
 No independent reviewer approval rule is imposed on this single-maintainer repo.
 
-`main` is protected: PRs must be up to date, pass required GitHub Actions checks
+`main` and `develop` are protected: PRs must be up to date, pass required GitHub Actions checks
 and resolve review conversations before merging. These rules also apply to
 administrators; force pushes and branch deletion are blocked. Release merge commits
 remain allowed. Do not bypass or relax protection to land a change.
+
+Merged feature branches in this repository are automatically deleted. Both long-lived branches are
+protected from deletion, including `develop` after a release PR. Repository checks
+and Application checks are required on both branches, including for administrators.
+When adding another CI job, register it as a required check on both branches after
+its first successful run; merely adding a workflow does not make its jobs required.
 
 ## Review size
 

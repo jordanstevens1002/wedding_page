@@ -56,7 +56,9 @@ Open `http://127.0.0.1:8080`. Only the web gateway publishes a port, bound to lo
 by default. Add your public hostname to `DJANGO_ALLOWED_HOSTS` before using your
 existing HTTPS proxy. PostgreSQL and media live in named volumes; `down` retains
 them. `down --volumes` deletes them and must not be used on a real deployment.
-This scaffold does not yet provide authentication or editor features.
+The editor authentication backend is available; the browser editor and login
+interface follow in later issues. See [editor access](docs/editor-access.md) for
+private account setup, recovery and HTTPS configuration.
 
 For build/test commands and API generation, see [development](docs/development.md).
 

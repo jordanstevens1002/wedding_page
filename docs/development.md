@@ -57,7 +57,9 @@ npm --prefix frontend run api:generate
 CI regenerates both artifacts and rejects drift. Schema JSON and generated TypeScript
 are reported separately from handwritten changes; migrations and tests still count.
 Application APIs default to authenticated session access. Only the health and schema
-views are explicitly public; authentication itself follows in issue #3.
+views are explicitly public. The [editor authentication API](editor-access.md)
+requires the configured shared editor; obtaining a CSRF token and logging in are
+public entry points, with explicit CSRF and login throttling protections.
 
 ## Dependency updates
 
