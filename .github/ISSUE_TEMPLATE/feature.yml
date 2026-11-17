@@ -1,0 +1,32 @@
+name: Feature or delivery slice
+description: Propose one independently reviewable change.
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: Describe the desired behaviour using fictional examples only.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Include permission and error behaviour where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and review boundary
+      description: Link prerequisites and explain what fits in this single PR.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation and manual review
+      description: Give test scenarios and expected reviewer actions.
+    validations:
+      required: true

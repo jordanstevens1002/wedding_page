@@ -1,0 +1,36 @@
+name: Repository
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Repository checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Test policy behaviour
+        run: node --test scripts/*.test.mjs
+      - name: Check tracked files and documentation links
+        run: node scripts/check-repository.mjs
+      - name: Check PR metadata and review size
+        if: github.event_name == 'pull_request'
+        run: node scripts/pr-policy.mjs --event "$GITHUB_EVENT_PATH"
