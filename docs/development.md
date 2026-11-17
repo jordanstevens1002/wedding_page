@@ -17,14 +17,18 @@ git diff --exit-code -- backend/openapi.json frontend/src/api/generated/schema.d
 The application check builds a uniquely named disposable Compose project using
 fictional credentials, an ephemeral localhost port and fresh volumes. It validates
 migrations, PostgreSQL-backed tests, gateway routing, frontend tests/builds, schema
-generation and database/media persistence after container recreation. Its exit trap
+generation and database/media persistence after container recreation. Chromium then
+exercises editor login, navigation, password change, logout and revoked-session handling
+against the real gateway/backend, including a mobile viewport. The disposable stack
+uses explicit HTTP development cookies for that browser phase only. Its exit trap
 removes only that test project's containers and volumes. It never loads `.env`.
 Do not interrupt it with SIGKILL, which prevents cleanup; remove only the test
 project reported in its output if interrupted that way.
 
 The normal runtime contains no pytest dependencies. Backend test images are built
 from the explicit `test` Docker stage. Both application images run as non-root users.
-Build-context allowlists keep environment files, runtime data and local tooling out
+The separate browser-test image pins Playwright and its matching browser image;
+neither is included in production images. Build-context allowlists keep environment files, runtime data and local tooling out
 of image layers. Media is not publicly served in this scaffold.
 
 ## Local frontend

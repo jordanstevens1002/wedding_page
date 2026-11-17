@@ -10,6 +10,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
+    "test:browser": "playwright test",
     "api:generate": "openapi-typescript ../backend/openapi.json -o src/api/generated/schema.d.ts"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@types/node": "24.19.2",

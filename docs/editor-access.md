@@ -1,7 +1,24 @@
 # Editor access
 
 There is one shared editor account, no default password and no public registration.
-The browser login interface follows in issue #4; this slice supplies its backend.
+Open `/editor/` to sign in. The public wedding page stays separate from the editor.
+
+## Browser workspace
+
+After signing in, use Website, Invitations & RSVPs and Account to move between
+workspaces. Website and invitation controls are placeholders until those features
+are delivered. View public site opens the published page in a separate tab.
+
+Account lets you change your password by entering the current password and confirming
+the new one. Sign out ends the current session. The app clears password fields on
+submission and does not save credentials or CSRF tokens in localStorage, sessionStorage
+or URLs. Your browser's password manager remains under your control.
+
+Returning to the tab or changing workspace checks the session again, without background
+polling that would keep an idle session alive. Expiry or recovery returns you to sign-in
+with an explanation. Network failures offer a retry; no protected controls appear until
+the server confirms access. A security-check failure does not automatically repeat a
+password submission or sign-out request.
 
 ## Configure or recover the account
 

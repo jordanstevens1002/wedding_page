@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add the browser editor login, logout, password change and protected navigation shell.
+- Add Chromium editor journeys to the required application checks.
 - Add shared editor bootstrap/recovery, CSRF-protected login and session lifecycle.
 - Add PostgreSQL-backed login throttling, password change and session revocation.
 - Require CI on develop as well as main and automatically delete merged feature branches.
