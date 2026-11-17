@@ -5,6 +5,163 @@
         "version": "0.1.0"
     },
     "paths": {
+        "/api/editor/csrf/": {
+            "get": {
+                "operationId": "editor_csrf_retrieve",
+                "tags": [
+                    "editor"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/editor/login/": {
+            "post": {
+                "operationId": "editor_login_create",
+                "tags": [
+                    "editor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "No response body"
+                    },
+                    "429": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/editor/logout/": {
+            "post": {
+                "operationId": "editor_logout_create",
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/editor/password/": {
+            "post": {
+                "operationId": "editor_password_create",
+                "tags": [
+                    "editor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Password"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Password"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Password"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/editor/session/": {
+            "get": {
+                "operationId": "editor_session_retrieve",
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/health/live/": {
             "get": {
                 "operationId": "health_live_retrieve",
@@ -69,6 +226,58 @@
                     "status"
                 ]
             },
+            "Login": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "maxLength": 1024
+                    }
+                },
+                "required": [
+                    "password",
+                    "username"
+                ]
+            },
+            "Password": {
+                "type": "object",
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "maxLength": 1024
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "maxLength": 1024
+                    }
+                },
+                "required": [
+                    "current_password",
+                    "new_password"
+                ]
+            },
+            "Session": {
+                "type": "object",
+                "properties": {
+                    "csrf_token": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "csrf_token",
+                    "username"
+                ]
+            },
             "StatusEnum": {
                 "enum": [
                     "ok",
@@ -76,6 +285,24 @@
                 ],
                 "type": "string",
                 "description": "* `ok` - ok\n* `unavailable` - unavailable"
+            },
+            "Token": {
+                "type": "object",
+                "properties": {
+                    "csrf_token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "csrf_token"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "cookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
             }
         }
     }

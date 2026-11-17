@@ -21,6 +21,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-wedding}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       WEDDING_TIMEZONE: ${WEDDING_TIMEZONE:-Australia/Sydney}
+      DJANGO_SECURE_COOKIES: ${DJANGO_SECURE_COOKIES:-true}
+      DJANGO_TRUST_PROXY_HEADERS: ${DJANGO_TRUST_PROXY_HEADERS:-false}
     command: ["python", "manage.py", "migrate", "--noinput"]
     depends_on:
       db: {condition: service_healthy}

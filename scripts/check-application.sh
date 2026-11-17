@@ -8,6 +8,7 @@ export POSTGRES_PASSWORD=fictional-check-password
 export POSTGRES_DB=wedding POSTGRES_USER=wedding
 export DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,app,testserver
 export APP_BIND=127.0.0.1 APP_PORT=0 WEDDING_TIMEZONE=Australia/Sydney
+export DJANGO_SECURE_COOKIES=true DJANGO_TRUST_PROXY_HEADERS=false
 dc() { docker compose --env-file /dev/null -f compose.yml -p "$project" "$@"; }
 cleanup() {
   result=$?
