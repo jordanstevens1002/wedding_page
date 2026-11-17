@@ -84,6 +84,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/editor/site/draft/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["editor_site_draft_retrieve"];
+        put: operations["editor_site_draft_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health/live/": {
         parameters: {
             query?: never;
@@ -116,13 +132,64 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/site/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["site_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Conflict: {
+            detail: string;
+            revision: number;
+        };
+        ContentEntry: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @default  */
+            body: string;
+            url?: string;
+            /** Format: date-time */
+            starts_at?: string | null;
+        };
+        Draft: {
+            revision: number;
+            document: components["schemas"]["SiteDocument"];
+        };
+        DraftWrite: {
+            base_revision: number;
+            document: components["schemas"]["SiteDocument"];
+        };
         Health: {
             status: components["schemas"]["StatusEnum"];
         };
+        /**
+         * @description * `welcome` - welcome
+         *     * `story` - story
+         *     * `schedule` - schedule
+         *     * `venue` - venue
+         *     * `travel` - travel
+         *     * `accommodation` - accommodation
+         *     * `faq` - faq
+         *     * `registry` - registry
+         *     * `gallery` - gallery
+         * @enum {string}
+         */
+        IdEnum: "welcome" | "story" | "schedule" | "venue" | "travel" | "accommodation" | "faq" | "registry" | "gallery";
         Login: {
             username: string;
             password: string;
@@ -131,9 +198,43 @@ export interface components {
             current_password: string;
             new_password: string;
         };
+        PublicDocument: {
+            schema_version: components["schemas"]["SchemaVersionEnum"];
+            title: string;
+            couple_names: string;
+            /** Format: date */
+            wedding_date: string | null;
+            timezone: string;
+            sections: components["schemas"]["Section"][];
+        };
+        PublicSite: {
+            configured: boolean;
+            document: components["schemas"]["PublicDocument"] | null;
+        };
+        /**
+         * @description * `1` - 1
+         * @enum {integer}
+         */
+        SchemaVersionEnum: 1;
+        Section: {
+            id: components["schemas"]["IdEnum"];
+            heading: string;
+            body: string;
+            visible: boolean;
+            entries: components["schemas"]["ContentEntry"][];
+        };
         Session: {
             csrf_token: string;
             username: string;
+        };
+        SiteDocument: {
+            schema_version: components["schemas"]["SchemaVersionEnum"];
+            title: string;
+            couple_names: string;
+            /** Format: date */
+            wedding_date: string | null;
+            timezone: string;
+            sections: components["schemas"]["Section"][];
         };
         /**
          * @description * `ok` - ok
@@ -280,6 +381,58 @@ export interface operations {
             };
         };
     };
+    editor_site_draft_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Draft"];
+                };
+            };
+        };
+    };
+    editor_site_draft_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftWrite"];
+                "application/x-www-form-urlencoded": components["schemas"]["DraftWrite"];
+                "multipart/form-data": components["schemas"]["DraftWrite"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Draft"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conflict"];
+                };
+            };
+        };
+    };
     health_live_retrieve: {
         parameters: {
             query?: never;
@@ -322,6 +475,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    site_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSite"];
                 };
             };
         };

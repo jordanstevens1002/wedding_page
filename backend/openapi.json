@@ -162,6 +162,84 @@
                 }
             }
         },
+        "/api/editor/site/draft/": {
+            "get": {
+                "operationId": "editor_site_draft_retrieve",
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Draft"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "editor_site_draft_update",
+                "tags": [
+                    "editor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DraftWrite"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DraftWrite"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DraftWrite"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Draft"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Conflict"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/health/live/": {
             "get": {
                 "operationId": "health_live_retrieve",
@@ -211,10 +289,118 @@
                     }
                 }
             }
+        },
+        "/api/site/": {
+            "get": {
+                "operationId": "site_retrieve",
+                "tags": [
+                    "site"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicSite"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "Conflict": {
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "type": "string"
+                    },
+                    "revision": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "detail",
+                    "revision"
+                ]
+            },
+            "ContentEntry": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "body": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 4000
+                    },
+                    "url": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "format": "uri",
+                                "maxLength": 2048
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "title"
+                ]
+            },
+            "Draft": {
+                "type": "object",
+                "properties": {
+                    "revision": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "document": {
+                        "$ref": "#/components/schemas/SiteDocument"
+                    }
+                },
+                "required": [
+                    "document",
+                    "revision"
+                ]
+            },
+            "DraftWrite": {
+                "type": "object",
+                "properties": {
+                    "base_revision": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "document": {
+                        "$ref": "#/components/schemas/SiteDocument"
+                    }
+                },
+                "required": [
+                    "base_revision",
+                    "document"
+                ]
+            },
             "Health": {
                 "type": "object",
                 "properties": {
@@ -225,6 +411,21 @@
                 "required": [
                     "status"
                 ]
+            },
+            "IdEnum": {
+                "enum": [
+                    "welcome",
+                    "story",
+                    "schedule",
+                    "venue",
+                    "travel",
+                    "accommodation",
+                    "faq",
+                    "registry",
+                    "gallery"
+                ],
+                "type": "string",
+                "description": "* `welcome` - welcome\n* `story` - story\n* `schedule` - schedule\n* `venue` - venue\n* `travel` - travel\n* `accommodation` - accommodation\n* `faq` - faq\n* `registry` - registry\n* `gallery` - gallery"
             },
             "Login": {
                 "type": "object",
@@ -263,6 +464,104 @@
                     "new_password"
                 ]
             },
+            "PublicDocument": {
+                "type": "object",
+                "properties": {
+                    "schema_version": {
+                        "$ref": "#/components/schemas/SchemaVersionEnum"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "couple_names": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "wedding_date": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Section"
+                        }
+                    }
+                },
+                "required": [
+                    "couple_names",
+                    "schema_version",
+                    "sections",
+                    "timezone",
+                    "title",
+                    "wedding_date"
+                ]
+            },
+            "PublicSite": {
+                "type": "object",
+                "properties": {
+                    "configured": {
+                        "type": "boolean"
+                    },
+                    "document": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PublicDocument"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "configured",
+                    "document"
+                ]
+            },
+            "SchemaVersionEnum": {
+                "enum": [
+                    1
+                ],
+                "type": "integer",
+                "description": "* `1` - 1"
+            },
+            "Section": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/IdEnum"
+                    },
+                    "heading": {
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "body": {
+                        "type": "string",
+                        "maxLength": 8000
+                    },
+                    "visible": {
+                        "type": "boolean"
+                    },
+                    "entries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContentEntry"
+                        }
+                    }
+                },
+                "required": [
+                    "body",
+                    "entries",
+                    "heading",
+                    "id",
+                    "visible"
+                ]
+            },
             "Session": {
                 "type": "object",
                 "properties": {
@@ -276,6 +575,45 @@
                 "required": [
                     "csrf_token",
                     "username"
+                ]
+            },
+            "SiteDocument": {
+                "type": "object",
+                "properties": {
+                    "schema_version": {
+                        "$ref": "#/components/schemas/SchemaVersionEnum"
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 140
+                    },
+                    "couple_names": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "wedding_date": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Section"
+                        }
+                    }
+                },
+                "required": [
+                    "couple_names",
+                    "schema_version",
+                    "sections",
+                    "timezone",
+                    "title",
+                    "wedding_date"
                 ]
             },
             "StatusEnum": {

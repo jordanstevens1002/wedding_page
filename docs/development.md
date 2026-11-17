@@ -17,7 +17,8 @@ git diff --exit-code -- backend/openapi.json frontend/src/api/generated/schema.d
 The application check builds a uniquely named disposable Compose project using
 fictional credentials, an ephemeral localhost port and fresh volumes. It validates
 migrations, PostgreSQL-backed tests, gateway routing, frontend tests/builds, schema
-generation and database/media persistence after container recreation. Chromium then
+generation and database/media/private-draft persistence after container recreation.
+The opt-in fictional draft remains absent from public responses. Chromium then
 exercises editor login, navigation, password change, logout and revoked-session handling
 against the real gateway/backend, including a mobile viewport. The disposable stack
 uses explicit HTTP development cookies for that browser phase only. Its exit trap

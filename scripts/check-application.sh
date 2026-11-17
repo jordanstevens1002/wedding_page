@@ -39,18 +39,22 @@ if dc exec -T web wget -qO- http://127.0.0.1:8080/api/unknown/; then
   exit 1
 fi
 # Prove that database records and private media outlive all application containers.
+printf '%s\n' 'Fictional!Browser!Pass123' | dc exec -T app python manage.py editor_account bootstrap --password-stdin
+dc exec -T app python manage.py example_site_draft
+dc exec -T web wget -qO- http://127.0.0.1:8080/api/site/ | grep -q '"configured":false'
 dc exec -T app python -c 'from pathlib import Path; Path("/data/media/check.txt").write_text("fictional media")'
 dc exec -T app python manage.py shell -c 'from django.contrib.sessions.models import Session; from django.utils import timezone; Session.objects.create(session_key="fictional-persistence-check", session_data="fictional", expire_date=timezone.now())'
 dc down
 dc up --detach --wait --wait-timeout 120
 dc exec -T app python -c 'from pathlib import Path; assert Path("/data/media/check.txt").read_text() == "fictional media"'
 dc exec -T app python manage.py shell -c 'from django.contrib.sessions.models import Session; assert Session.objects.filter(session_key="fictional-persistence-check").exists()'
+dc exec -T app python manage.py shell -c 'from wedding.content.services import read_draft; assert read_draft()["document"]["title"] == "Fictional demonstration wedding"'
+dc exec -T web wget -qO- http://127.0.0.1:8080/api/site/ | grep -q '"configured":false'
 echo 'Application checks and container recreation passed.'
 # Exercise the browser against the isolated stack in explicit HTTP development mode.
 export DJANGO_SECURE_COOKIES=false
 dc down
 dc up --detach --wait --wait-timeout 120
-printf '%s\n' 'Fictional!Browser!Pass123' | dc exec -T app python manage.py editor_account bootstrap --password-stdin
 docker build --target browser-test -t "$project-browser-test" frontend
 docker run --rm --shm-size=256m --network "${project}_default" \
   -e BASE_URL=http://web:8080 "$project-browser-test"

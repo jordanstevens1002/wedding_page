@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Persist versioned website drafts in PostgreSQL with validated section identifiers.
+- Separate editor draft APIs from public published content, excluding hidden sections.
+- Add opt-in fictional private examples and draft persistence/concurrency checks.
 - Add the browser editor login, logout, password change and protected navigation shell.
 - Add Chromium editor journeys to the required application checks.
 - Add shared editor bootstrap/recovery, CSRF-protected login and session lifecycle.
