@@ -1,0 +1,11 @@
+*
+!requirements.lock
+!dev/
+!dev/requirements.lock
+!manage.py
+!pyproject.toml
+!wedding/
+!wedding/**
+!tests/
+!tests/**
+**/__pycache__

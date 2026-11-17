@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 export function isGeneratedPath(file) {
   return /(?:^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|uv\.lock|requirements\.lock)$/.test(file)
+    || file === 'backend/openapi.json'
     || /^(frontend\/src\/api\/generated\/|vendor\/|third_party\/)/.test(file);
 }
 
