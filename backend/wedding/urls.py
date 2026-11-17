@@ -4,8 +4,13 @@ from drf_spectacular.views import SpectacularAPIView
 from .health import LiveView, ReadyView
 from .editor.views import CsrfView, LoginView, LogoutView, PasswordView, SessionView
 from .content.views import DraftView, PublicSiteView
+from .media.views import AssetInfoView, AssetView, ImageView, LibraryView
 
 urlpatterns = [
+    path("api/editor/media/", LibraryView.as_view()),
+    path("api/editor/media/<uuid:pk>/", AssetView.as_view()),
+    path("api/media/<uuid:pk>/<int:width>/", ImageView.as_view()),
+    path("api/media/<uuid:pk>/", AssetInfoView.as_view()),
     path("api/site/", PublicSiteView.as_view()),
     path("api/editor/site/draft/", DraftView.as_view()),
     path("api/editor/csrf/", CsrfView.as_view()),

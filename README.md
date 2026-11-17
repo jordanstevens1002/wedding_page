@@ -64,5 +64,7 @@ configuration.
 For build/test commands and API generation, see [development](docs/development.md).
 The [content API](docs/content-api.md) stores validated, versioned private drafts in
 the deployment; browser content editing and publication follow in later issues.
+The [media API](docs/media-api.md) processes uploads and serves only authorised image
+variants from the private media volume. The browser image library follows next.
 
 Licensed under [GPL-3.0](LICENSE).

@@ -52,6 +52,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/editor/media/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["editor_media_list"];
+        put?: never;
+        post: operations["editor_media_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/editor/media/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["editor_media_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["editor_media_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/editor/password/": {
         parameters: {
             query?: never;
@@ -132,6 +164,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/media/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["media_metadata_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/media/{id}/{width}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["media_image_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/site/": {
         parameters: {
             query?: never;
@@ -152,6 +216,15 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Asset: {
+            /** Format: uuid */
+            readonly id: string;
+            readonly width: number;
+            readonly height: number;
+            /** Format: date-time */
+            readonly created_at: string;
+            readonly variants: components["schemas"]["Variant"][];
+        };
         Conflict: {
             detail: string;
             revision: number;
@@ -165,6 +238,7 @@ export interface components {
             url?: string;
             /** Format: date-time */
             starts_at?: string | null;
+            image?: components["schemas"]["ImageReference"] | null;
         };
         Draft: {
             revision: number;
@@ -190,13 +264,55 @@ export interface components {
          * @enum {string}
          */
         IdEnum: "welcome" | "story" | "schedule" | "venue" | "travel" | "accommodation" | "faq" | "registry" | "gallery";
+        ImageReference: {
+            /** Format: uuid */
+            asset_id: string;
+            /** @default  */
+            alt_text: string;
+            /** @default false */
+            decorative: boolean;
+            /** @default  */
+            caption: string;
+            /**
+             * Format: double
+             * @default 0.5
+             */
+            focal_x: number;
+            /**
+             * Format: double
+             * @default 0.5
+             */
+            focal_y: number;
+        };
         Login: {
             username: string;
             password: string;
         };
+        PaginatedAssetList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["Asset"][];
+        };
         Password: {
             current_password: string;
             new_password: string;
+        };
+        PublicAsset: {
+            /** Format: uuid */
+            readonly id: string;
+            readonly width: number;
+            readonly height: number;
+            readonly variants: components["schemas"]["Variant"][];
         };
         PublicDocument: {
             schema_version: components["schemas"]["SchemaVersionEnum"];
@@ -222,6 +338,7 @@ export interface components {
             body: string;
             visible: boolean;
             entries: components["schemas"]["ContentEntry"][];
+            image?: components["schemas"]["ImageReference"] | null;
         };
         Session: {
             csrf_token: string;
@@ -244,6 +361,15 @@ export interface components {
         StatusEnum: "ok" | "unavailable";
         Token: {
             csrf_token: string;
+        };
+        Upload: {
+            /** Format: uri */
+            file: string;
+        };
+        Variant: {
+            width: number;
+            height: number;
+            url: string;
         };
     };
     responses: never;
@@ -323,6 +449,102 @@ export interface operations {
         responses: {
             /** @description No response body */
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    editor_media_list: {
+        parameters: {
+            query?: {
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAssetList"];
+                };
+            };
+        };
+    };
+    editor_media_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Upload"];
+                "application/x-www-form-urlencoded": components["schemas"]["Upload"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Asset"];
+                };
+            };
+        };
+    };
+    editor_media_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Asset"];
+                };
+            };
+        };
+    };
+    editor_media_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No response body */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -475,6 +697,49 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    media_metadata_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicAsset"];
+                };
+            };
+        };
+    };
+    media_image_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                width: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/webp": string;
                 };
             };
         };

@@ -89,6 +89,155 @@
                 }
             }
         },
+        "/api/editor/media/": {
+            "get": {
+                "operationId": "editor_media_list",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedAssetList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "editor_media_create",
+                "tags": [
+                    "editor"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Upload"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Upload"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Asset"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/editor/media/{id}/": {
+            "get": {
+                "operationId": "editor_media_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Asset"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "editor_media_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "editor"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    },
+                    "409": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/editor/password/": {
             "post": {
                 "operationId": "editor_password_create",
@@ -290,6 +439,77 @@
                 }
             }
         },
+        "/api/media/{id}/": {
+            "get": {
+                "operationId": "media_metadata_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "media"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicAsset"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/media/{id}/{width}/": {
+            "get": {
+                "operationId": "media_image_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "width",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "media"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "image/webp": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/site/": {
             "get": {
                 "operationId": "site_retrieve",
@@ -313,6 +533,43 @@
     },
     "components": {
         "schemas": {
+            "Asset": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "width": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "height": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Variant"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "height",
+                    "id",
+                    "variants",
+                    "width"
+                ]
+            },
             "Conflict": {
                 "type": "object",
                 "properties": {
@@ -361,6 +618,14 @@
                     "starts_at": {
                         "type": "string",
                         "format": "date-time",
+                        "nullable": true
+                    },
+                    "image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ImageReference"
+                            }
+                        ],
                         "nullable": true
                     }
                 },
@@ -427,6 +692,46 @@
                 "type": "string",
                 "description": "* `welcome` - welcome\n* `story` - story\n* `schedule` - schedule\n* `venue` - venue\n* `travel` - travel\n* `accommodation` - accommodation\n* `faq` - faq\n* `registry` - registry\n* `gallery` - gallery"
             },
+            "ImageReference": {
+                "type": "object",
+                "properties": {
+                    "asset_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "alt_text": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 500
+                    },
+                    "decorative": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "caption": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 1000
+                    },
+                    "focal_x": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 1,
+                        "minimum": 0,
+                        "default": 0.5
+                    },
+                    "focal_y": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 1,
+                        "minimum": 0,
+                        "default": 0.5
+                    }
+                },
+                "required": [
+                    "asset_id"
+                ]
+            },
             "Login": {
                 "type": "object",
                 "properties": {
@@ -445,6 +750,37 @@
                     "username"
                 ]
             },
+            "PaginatedAssetList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Asset"
+                        }
+                    }
+                }
+            },
             "Password": {
                 "type": "object",
                 "properties": {
@@ -462,6 +798,37 @@
                 "required": [
                     "current_password",
                     "new_password"
+                ]
+            },
+            "PublicAsset": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "width": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "height": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Variant"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "height",
+                    "id",
+                    "variants",
+                    "width"
                 ]
             },
             "PublicDocument": {
@@ -552,6 +919,14 @@
                         "items": {
                             "$ref": "#/components/schemas/ContentEntry"
                         }
+                    },
+                    "image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ImageReference"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -633,6 +1008,37 @@
                 },
                 "required": [
                     "csrf_token"
+                ]
+            },
+            "Upload": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            },
+            "Variant": {
+                "type": "object",
+                "properties": {
+                    "width": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "height",
+                    "url",
+                    "width"
                 ]
             }
         },

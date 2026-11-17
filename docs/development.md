@@ -28,6 +28,8 @@ project reported in its output if interrupted that way.
 
 The normal runtime contains no pytest dependencies. Backend test images are built
 from the explicit `test` Docker stage. Both application images run as non-root users.
+The persistence phase now stores a generated photo and its draft reference, then
+checks that the processed WebP survives container recreation. No real photos are used.
 The separate browser-test image pins Playwright and its matching browser image;
 neither is included in production images. Build-context allowlists keep environment files, runtime data and local tooling out
 of image layers. Media is not publicly served in this scaffold.

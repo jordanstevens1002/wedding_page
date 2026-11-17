@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add validated photo uploads, metadata stripping and responsive WebP variants.
+- Enforce published/editor-only image delivery and protect historical image references.
+- Keep captions, alt text and focal points in versioned website documents.
 - Persist versioned website drafts in PostgreSQL with validated section identifiers.
 - Separate editor draft APIs from public published content, excluding hidden sections.
 - Add opt-in fictional private examples and draft persistence/concurrency checks.

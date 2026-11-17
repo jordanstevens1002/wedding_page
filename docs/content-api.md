@@ -42,8 +42,8 @@ invalid. Array order defines display order.
 Entries contain a stable UUID id, title, plain-text body, optional HTTP(S) url and
 nullable starts_at. Use titles/bodies for FAQ questions/answers, venue or lodging
 details, travel guidance and registry labels; schedule entries can include timestamps.
-Entry identifiers must be unique within their section. Gallery text is supported;
-uploaded image references and delivery arrive with the media issues.
+Entry identifiers must be unique within their section. Sections and entries also
+support versioned [image references](media-api.md) for uploaded library assets.
 
 Headings/entry titles are limited to 140 characters, section bodies to 8,000 and entry
 bodies to 4,000. Each section allows up to 50 entries; total normalised text data must
