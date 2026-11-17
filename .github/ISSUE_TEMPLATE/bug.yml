@@ -1,0 +1,25 @@
+name: Bug report
+description: Report a reproducible defect without private data.
+labels: ["type:maintenance"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not post secrets or guest data. See SECURITY.md for private reporting."
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and environment
+      description: Use fictional data and include the affected version/browser.
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Expected and actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: regression
+    attributes:
+      label: Regression scenario and review boundary
+      description: Describe the test that should prevent this defect recurring.

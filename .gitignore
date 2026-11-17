@@ -1,0 +1,42 @@
+# Only placeholder environment examples belong in Git.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+.aws/
+.agents/
+.codex/
+
+# Private runtime storage and downloads.
+/data/
+/runtime/
+/media/
+/uploads/
+/backups/
+/exports/
+*.sqlite
+*.sqlite3
+*.dump
+*.bak
+*.log
+
+# Dependencies, build output and local tooling.
+node_modules/
+dist/
+build/
+coverage/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+playwright-report/
+test-results/
+.DS_Store
+.idea/
+.vscode/
