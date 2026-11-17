@@ -54,10 +54,14 @@ the application bootstrap issue.
 
 Include exact commands, results and manual review steps in each PR. Behavioural
 changes need relevant automated tests; documentation edits do not require invented
-tests. Use Australian English where practical. Contributors remain responsible for
-every submitted change, including changes prepared with AI assistance.
+tests. Use Australian English where practical.
 
 ## AI-assisted contributions
+
+AI assistance is welcome and does not need to be declared on each PR. Contributors
+remain responsible for every line they submit, including AI-assisted code, tests
+and documentation. Personally review and understand all proposed changes, verify
+their behaviour and address defects regardless of how the changes were produced.
 
 AI assistants may prepare code, tests, documentation, issues and PRs within the
 maintainer's authorised scope. Read the applicable repository instructions, issue,
@@ -82,8 +86,7 @@ AI-authored source, tests, migrations and documentation count towards the handwr
 review-size budget. They are not generated-output exemptions; those exemptions cover
 deterministically generated artifacts such as lockfiles and generated API types.
 
-When AI assistance materially contributes to a PR, briefly note its use and the
-validation performed. Do not publish conversation transcripts or sensitive prompts.
+Do not publish conversation transcripts or sensitive prompts.
 Checkboxes and review claims must describe work actually performed; only the
 maintainer provides the final review and merge decision.
 
