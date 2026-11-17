@@ -54,8 +54,38 @@ the application bootstrap issue.
 
 Include exact commands, results and manual review steps in each PR. Behavioural
 changes need relevant automated tests; documentation edits do not require invented
-tests. Use Australian English where practical. AI-assisted contributors remain
-responsible for every submitted change.
+tests. Use Australian English where practical. Contributors remain responsible for
+every submitted change, including changes prepared with AI assistance.
+
+## AI-assisted contributions
+
+AI assistants may prepare code, tests, documentation, issues and PRs within the
+maintainer's authorised scope. Read the applicable repository instructions, issue,
+design and current implementation before making changes. Explicit maintainer
+instructions take precedence over this guide's workflow defaults.
+
+- Continue authorised, reversible work without repeatedly requesting confirmation.
+  Ask focused questions when an unresolved decision materially affects scope or
+  behaviour; obtain authorisation for destructive actions outside the agreed work.
+- Keep changes focused, preserve unrelated work and follow the same one-PR review
+  sequence. Update the existing PR when addressing its review feedback.
+- Inspect the complete diff, including new files and generated outputs. Assistant
+  self-review does not replace maintainer review or authorise merging. Do not merge
+  PRs or begin the next dependent slice before the maintainer merges its prerequisite.
+- Run relevant checks and record actual commands and results. Distinguish automated
+  checks, manual checks and checks that were not performed. If a tool or environment
+  blocks verification, explain the limit instead of claiming success.
+- Use fictional fixtures and redact private data from prompts, logs, screenshots and
+  PR evidence. Never expose deployment secrets or party credentials.
+
+AI-authored source, tests, migrations and documentation count towards the handwritten
+review-size budget. They are not generated-output exemptions; those exemptions cover
+deterministically generated artifacts such as lockfiles and generated API types.
+
+When AI assistance materially contributes to a PR, briefly note its use and the
+validation performed. Do not publish conversation transcripts or sensitive prompts.
+Checkboxes and review claims must describe work actually performed; only the
+maintainer provides the final review and merge decision.
 
 ## Release and project status
 
