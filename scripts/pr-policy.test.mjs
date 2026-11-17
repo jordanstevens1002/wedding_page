@@ -16,8 +16,9 @@ const count = handwritten => ({ handwritten, generated: 0, binary: [] });
 test('sizes count additions and deletions, separating generated output and binary files', () => {
   const result = summariseDiff('5\t3\tbackend/migrations/0001.py\0'
     + '7\t2\tdocs/design.md\0' + '100\t20\tfrontend/package-lock.json\0'
-    + '20\t10\tfrontend/src/api/generated/client.ts\0' + '-\t-\tphoto.png\0');
-  assert.deepEqual(result, { handwritten: 17, generated: 150, binary: ['photo.png'] });
+    + '20\t10\tfrontend/src/api/generated/client.ts\0' + '8\t2\tbackend/openapi.json\0'
+    + '-\t-\tphoto.png\0');
+  assert.deepEqual(result, { handwritten: 17, generated: 160, binary: ['photo.png'] });
 });
 
 test('unusual filenames cannot change numstat parsing or execute commands', () => {

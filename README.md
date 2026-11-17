@@ -3,8 +3,9 @@
 A self-hosted wedding website with a visual editor, interchangeable layouts and
 colour palettes, and private party-based RSVPs.
 
-**Status:** repository setup. The website and Docker application are not implemented
-yet. Delivery is tracked in the [GitHub project](https://github.com/users/jordanstevens1002/projects/3)
+**Status:** application scaffold. Compose serves an unconfigured placeholder page;
+the editor and RSVPs are not implemented yet. Delivery is tracked in the
+[GitHub project](https://github.com/users/jordanstevens1002/projects/3)
 and the [ordered roadmap](docs/roadmap.md).
 
 ## Planned experience
@@ -38,5 +39,25 @@ node scripts/pr-policy.mjs --diff develop HEAD
 
 Feature PRs target `develop`; reviewed releases promote `develop` to `main`.
 The maintainer reviews and merges one feature PR before dependent work begins.
+
+## Run the scaffold
+
+Copy `.env.example` to `.env` and fill in two independent random values for
+`DJANGO_SECRET_KEY` and `POSTGRES_PASSWORD`. Generate each locally with
+`python3 -c 'import secrets; print(secrets.token_urlsafe(48))'`.
+
+```sh
+docker compose up --build --detach --wait
+curl http://127.0.0.1:8080/api/health/ready/
+docker compose down
+```
+
+Open `http://127.0.0.1:8080`. Only the web gateway publishes a port, bound to localhost
+by default. Add your public hostname to `DJANGO_ALLOWED_HOSTS` before using your
+existing HTTPS proxy. PostgreSQL and media live in named volumes; `down` retains
+them. `down --volumes` deletes them and must not be used on a real deployment.
+This scaffold does not yet provide authentication or editor features.
+
+For build/test commands and API generation, see [development](docs/development.md).
 
 Licensed under [GPL-3.0](LICENSE).

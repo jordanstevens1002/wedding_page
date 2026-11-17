@@ -1,0 +1,19 @@
+[project]
+name = "wedding-website"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "Django>=5.2.8,<5.3",
+  "djangorestframework>=3.16,<4",
+  "drf-spectacular>=0.28,<1",
+  "gunicorn>=23,<26",
+  "psycopg[binary]>=3.2,<4",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10", "pytest-django>=4.9,<5"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "wedding.settings"
+pythonpath = ["."]
+testpaths = ["tests"]

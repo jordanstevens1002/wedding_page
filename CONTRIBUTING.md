@@ -30,6 +30,11 @@ ci, chore, perf, revert. Mark incompatible changes with `!` and describe the imp
 Feature PRs are squash-merged into `develop`; never rewrite long-lived branch history.
 No independent reviewer approval rule is imposed on this single-maintainer repo.
 
+`main` is protected: PRs must be up to date, pass required GitHub Actions checks
+and resolve review conversations before merging. These rules also apply to
+administrators; force pushes and branch deletion are blocked. Release merge commits
+remain allowed. Do not bypass or relax protection to land a change.
+
 ## Review size
 
 Target 750–1,000 handwritten additions plus deletions, allowing room for review

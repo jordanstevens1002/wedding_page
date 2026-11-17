@@ -15,6 +15,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  application:
+    name: Application checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build and verify disposable application stack
+        run: sh scripts/check-application.sh
+      - name: Verify generated API artifacts are current
+        run: git diff --exit-code -- backend/openapi.json frontend/src/api/generated/schema.d.ts
   checks:
     name: Repository checks
     runs-on: ubuntu-latest
