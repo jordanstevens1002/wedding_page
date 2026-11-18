@@ -3,6 +3,7 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { editorApi, EditorApiError } from '../api/editor';
 import { Editor } from './Editor';
 
+vi.mock('./ImageWorkspace', () => ({ ImageWorkspace: () => <div>Image workspace</div> }));
 vi.mock('../api/editor', async importOriginal => ({
   ...await importOriginal<typeof import('../api/editor')>(),
   editorApi: { session: vi.fn(), login: vi.fn(), password: vi.fn(), logout: vi.fn() },

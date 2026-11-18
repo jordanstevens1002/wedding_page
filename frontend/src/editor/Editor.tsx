@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ImageWorkspace } from './ImageWorkspace';
 import { LoginForm, PasswordForm } from './Forms';
 import { useEditorSession } from './useEditorSession';
 
@@ -9,9 +10,16 @@ function currentSection(): keyof typeof sections {
 }
 
 export function Editor() {
-  const { access, working, login, password, logout, retry } = useEditorSession();
+  const { access, working, login, password, logout, retry, verify } = useEditorSession();
   const [section, setSection] = useState(currentSection);
   const [error, setError] = useState('');
+  const [dirty, setDirty] = useState(false);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => { if (dirty) { event.preventDefault(); event.returnValue = ''; } };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [dirty]);
+  const leave = () => !dirty || window.confirm('Discard unsaved image changes?');
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     const navigate = () => { setSection(currentSection()); setError(''); };
@@ -44,9 +52,10 @@ export function Editor() {
       event.preventDefault(); document.getElementById('editor-content')?.focus();
     }}>Skip to editor content</a>
     <header>
-      <a className="brand" href="/editor/#website">Wedding workspace</a>
+      <a className="brand" href="/editor/#website" onClick={event => { if (!leave()) event.preventDefault(); }}>Wedding workspace</a>
       <div className="editor-actions"><span>Signed in as {access.session.username}</span>{preview}
         <button className="secondary" disabled={working} onClick={() => {
+          if (!leave()) return;
           setError(''); void logout().catch(failure => setError(failure instanceof Error ? failure.message : 'Please try again.'));
         }}>{working ? 'Please wait…' : 'Sign out'}</button>
       </div>
@@ -54,7 +63,7 @@ export function Editor() {
     <div className="editor-layout">
       <nav aria-label="Editor workspaces">{Object.entries(sections).map(([key, label]) =>
         <a key={key} href={`#${key}`} aria-current={section === key ? 'page' : undefined} aria-disabled={working}
-          onClick={event => { if (working) event.preventDefault(); }}>{label}</a>)}
+          onClick={event => { if (working || !leave()) event.preventDefault(); }}>{label}</a>)}
       </nav>
       <main id="editor-content" className="workspace" tabIndex={-1}>
         <p className="eyebrow">Your celebration, your way</p>
@@ -63,12 +72,10 @@ export function Editor() {
         {section === 'account' ? <>
           <p>Keep your shared editor account secure.</p>
           <PasswordForm submit={password} working={working} />
-        </> : <section className="workspace-placeholder">
-          <h2>{section === 'website' ? 'A place for your wedding details' : 'A place for your guest list'}</h2>
-          <p>{section === 'website' ? 'Content, photos and design controls will appear here when available.'
-            : 'Invitation management and guest responses will appear here when available.'}</p>
-          <p className="help">{section === 'website' ? 'The public view shows only published information.'
-            : 'Guest details and responses will stay private to the editor and each invited party.'}</p>
+        </> : section === 'website' ? <ImageWorkspace failSession={verify} onDirty={setDirty} /> : <section className="workspace-placeholder">
+          <h2>A place for your guest list</h2>
+          <p>Invitation management and guest responses will appear here when available.</p>
+          <p className="help">Guest details and responses will stay private to the editor and each invited party.</p>
         </section>}
       </main>
     </div>

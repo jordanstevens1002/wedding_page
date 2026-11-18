@@ -47,3 +47,21 @@ p { line-height: 1.7; }
   .editor-layout nav a { padding: .8rem; margin: 0; }
   .workspace-placeholder { padding: 1.25rem; }
 }
+
+.editor-root select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23263c33' stroke-width='2'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .8rem center; font: inherit; width: 100%; min-height: 44px; padding: .8rem 2.5rem .8rem .8rem; background-color: white; color: #263c33; border: 1px solid #7a887f; border-radius: .35rem; }
+.image-workspace { max-width: 64rem; }
+.image-workspace > fieldset > label, .image-workspace > fieldset > select { max-width: 36rem; }
+.image-workspace figure { margin: 0; }
+.image-workspace figcaption { padding: .6rem 0; overflow-wrap: anywhere; }
+.image-preview { display: block; width: 100%; height: 18rem; object-fit: cover; border-radius: .5rem; background: #e2eadf; }
+.image-workspace .checkbox-label { display: flex; gap: .7rem; align-items: center; }
+.image-workspace input[type="checkbox"] { width: 1.4rem; min-height: 1.4rem; margin: 0; }
+.image-workspace input[type="range"] { padding: 0; accent-color: #365e4a; }
+.image-workspace button { margin: .4rem .5rem .4rem 0; }
+.image-library { border-top: 1px solid #aab8aa; margin-top: 2rem; padding-top: 1rem; }
+.image-library form { margin: 1rem 0; }
+.image-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 1rem; }
+.image-grid li { padding: .8rem; border: 1px solid #aab8aa; border-radius: .5rem; background: #fffefa; }
+.library-thumbnail { display: block; width: 100%; height: 9rem; object-fit: contain; background: #e2eadf; }
+.image-grid p { margin: .5rem 0; font-size: .9rem; }
+.image-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
