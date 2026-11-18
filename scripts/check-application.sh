@@ -41,6 +41,21 @@ fi
 # Prove that database records and private media outlive all application containers.
 printf '%s\n' 'Fictional!Browser!Pass123' | dc exec -T app python manage.py editor_account bootstrap --password-stdin
 dc exec -T app python manage.py example_site_draft
+dc exec -T app python manage.py shell <<'PY'
+from io import BytesIO
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+from wedding.editor.models import EditorAccount
+from wedding.content.services import read_draft, save_draft
+from wedding.media.services import upload_asset
+data = BytesIO()
+Image.new("RGB", (32, 16), "green").save(data, format="PNG")
+actor = EditorAccount.objects.get().user
+asset = upload_asset(SimpleUploadedFile("fictional.png", data.getvalue()), actor)
+draft = read_draft()
+draft["document"]["sections"][0]["image"] = {"asset_id": str(asset.pk), "alt_text": "Fictional generated image"}
+save_draft(document=draft["document"], base_revision=draft["revision"], actor=actor)
+PY
 dc exec -T web wget -qO- http://127.0.0.1:8080/api/site/ | grep -q '"configured":false'
 dc exec -T app python -c 'from pathlib import Path; Path("/data/media/check.txt").write_text("fictional media")'
 dc exec -T app python manage.py shell -c 'from django.contrib.sessions.models import Session; from django.utils import timezone; Session.objects.create(session_key="fictional-persistence-check", session_data="fictional", expire_date=timezone.now())'
@@ -49,6 +64,7 @@ dc up --detach --wait --wait-timeout 120
 dc exec -T app python -c 'from pathlib import Path; assert Path("/data/media/check.txt").read_text() == "fictional media"'
 dc exec -T app python manage.py shell -c 'from django.contrib.sessions.models import Session; assert Session.objects.filter(session_key="fictional-persistence-check").exists()'
 dc exec -T app python manage.py shell -c 'from wedding.content.services import read_draft; assert read_draft()["document"]["title"] == "Fictional demonstration wedding"'
+dc exec -T app python manage.py shell -c 'from PIL import Image; from wedding.media.models import Asset; from wedding.media.services import asset_directory; asset = Asset.objects.get(); assert asset.references.count() == 1; assert Image.open(asset_directory(asset.pk) / "32.webp").format == "WEBP"'
 dc exec -T web wget -qO- http://127.0.0.1:8080/api/site/ | grep -q '"configured":false'
 echo 'Application checks and container recreation passed.'
 # Exercise the browser against the isolated stack in explicit HTTP development mode.

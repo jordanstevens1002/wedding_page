@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "wedding.editor",
     "wedding.content",
+    "wedding.media",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

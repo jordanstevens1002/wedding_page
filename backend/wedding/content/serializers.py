@@ -1,4 +1,5 @@
 import json
+import math
 from datetime import datetime, timezone as datetime_timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -33,6 +34,22 @@ class TimestampField(serializers.DateTimeField):
         return super().to_internal_value(value)
 
 
+class ImageReferenceSerializer(StrictSerializer):
+    asset_id = serializers.UUIDField()
+    alt_text = serializers.CharField(max_length=500, allow_blank=True, default="")
+    decorative = serializers.BooleanField(default=False)
+    caption = serializers.CharField(max_length=1000, allow_blank=True, default="")
+    focal_x = serializers.FloatField(min_value=0, max_value=1, default=0.5)
+    focal_y = serializers.FloatField(min_value=0, max_value=1, default=0.5)
+
+    def validate(self, data):
+        if not data["decorative"] and not data["alt_text"]:
+            raise serializers.ValidationError("Add alt text or mark this image as decorative.")
+        if not all(math.isfinite(data[key]) for key in ["focal_x", "focal_y"]):
+            raise serializers.ValidationError("Focal points must be finite numbers between zero and one.")
+        return data
+
+
 class ContentEntrySerializer(StrictSerializer):
     id = serializers.UUIDField()
     title = serializers.CharField(max_length=140)
@@ -40,6 +57,7 @@ class ContentEntrySerializer(StrictSerializer):
     url = serializers.CharField(max_length=2048, allow_blank=True, default="",
                                 validators=[URLValidator(schemes=["http", "https"])])
     starts_at = TimestampField(allow_null=True, default=None, default_timezone=datetime_timezone.utc)
+    image = ImageReferenceSerializer(allow_null=True, default=None)
 
 
 class SectionSerializer(StrictSerializer):
@@ -48,6 +66,7 @@ class SectionSerializer(StrictSerializer):
     body = serializers.CharField(max_length=8000, allow_blank=True)
     visible = serializers.BooleanField()
     entries = ContentEntrySerializer(many=True, max_length=50)
+    image = ImageReferenceSerializer(allow_null=True, default=None)
 
     def validate_entries(self, entries):
         ids = [entry["id"] for entry in entries]

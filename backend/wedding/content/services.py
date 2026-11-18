@@ -16,7 +16,7 @@ def blank_document():
     return {
         "schema_version": 1, "title": "Wedding details", "couple_names": "",
         "wedding_date": None, "timezone": settings.TIME_ZONE,
-        "sections": [{"id": key, "heading": heading, "body": "", "visible": False, "entries": []}
+        "sections": [{"id": key, "heading": heading, "body": "", "visible": False, "entries": [], "image": None}
                      for key, heading in SECTION_NAMES.items()],
     }
 
@@ -42,13 +42,21 @@ def save_draft(*, document, base_revision, actor):
     serializer = SiteDocumentSerializer(data=document)
     serializer.is_valid(raise_exception=True)
     normalised = dict(serializer.data)
+    from wedding.media.models import Asset, AssetReference
+    from wedding.media.services import image_ids
+    from rest_framework.exceptions import ValidationError
+    ids = image_ids(normalised)
     with transaction.atomic():
         WebsiteState.objects.get_or_create(pk=1)
         state = WebsiteState.objects.select_for_update().get(pk=1)
         current = state.draft_id or 0
         if base_revision != current:
             raise DraftConflict(current)
+        assets = list(Asset.objects.select_for_update().filter(pk__in=ids).order_by("pk"))
+        if {asset.pk for asset in assets} != ids:
+            raise ValidationError({"document": ["A selected image no longer exists. Reload the image library."]})
         revision = SiteRevision.objects.create(document=normalised, created_by=actor)
+        AssetReference.objects.bulk_create([AssetReference(asset=asset, revision=revision) for asset in assets])
         state.draft = revision
         state.save(update_fields=["draft"])
     return {"revision": revision.pk, "document": normalised}
