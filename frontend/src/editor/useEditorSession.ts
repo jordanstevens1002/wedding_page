@@ -75,7 +75,7 @@ export function useEditorSession() {
     }
   }
 
-  return { access, working, retry: () => { void check(true); },
+  return { access, working, verify: () => { void check(); }, retry: () => { void check(true); },
     login: (data: Parameters<typeof editorApi.login>[0]) => perform(() => editorApi.login(data)),
     password: (data: Parameters<typeof editorApi.password>[0]) => perform(() => editorApi.password(data)),
     logout: () => perform(editorApi.logout) };

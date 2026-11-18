@@ -3,8 +3,9 @@
 A self-hosted wedding website with a visual editor, interchangeable layouts and
 colour palettes, and private party-based RSVPs.
 
-**Status:** application scaffold. Compose serves an unconfigured placeholder page;
-content editing and RSVPs are not implemented yet. Delivery is tracked in the
+**Status:** editor authentication, private drafts and the [image library](docs/image-editor.md)
+are available. Compose serves an unconfigured public placeholder; full text editing,
+publication controls and RSVPs follow in later roadmap steps. Delivery is tracked in the
 [GitHub project](https://github.com/users/jordanstevens1002/projects/3)
 and the [ordered roadmap](docs/roadmap.md).
 
@@ -63,8 +64,10 @@ configuration.
 
 For build/test commands and API generation, see [development](docs/development.md).
 The [content API](docs/content-api.md) stores validated, versioned private drafts in
-the deployment; browser content editing and publication follow in later issues.
+the deployment; browser image editing is available. Full text editing and publication
+follow in later issues.
 The [media API](docs/media-api.md) processes uploads and serves only authorised image
-variants from the private media volume. The browser image library follows next.
+variants from the private media volume. Use the [image editor](docs/image-editor.md)
+to upload photos and save their display settings to a private draft.
 
 Licensed under [GPL-3.0](LICENSE).

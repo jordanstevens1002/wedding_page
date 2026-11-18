@@ -1,7 +1,7 @@
 # Runtime photos
 
-This slice supplies upload, library, delivery and deletion APIs. The browser picker
-and metadata controls follow in issue #7. Actual photos stay in the deployment's
+Upload, library, delivery and deletion APIs support the browser
+[image editor](image-editor.md). Actual photos stay in the deployment's
 private media volume; no originals or processed photos belong in Git/build contexts.
 
 ## Upload and browse

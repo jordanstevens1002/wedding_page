@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add the browser image library with upload, selection, pagination and deletion controls.
+- Edit versioned alt text, captions and focal points with responsive previews and explicit draft saves.
+- Preserve image settings on save failures and require reload on conflicting edits.
+
 - Add validated photo uploads, metadata stripping and responsive WebP variants.
 - Enforce published/editor-only image delivery and protect historical image references.
 - Keep captions, alt text and focal points in versioned website documents.
